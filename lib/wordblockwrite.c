@@ -28,12 +28,12 @@ char dataaddr[32];
 extern struct _data word_write (struct _comm comm1, char *addr, int count, 
 			struct _data outdata, int plctype, int debug)
 {
-struct ethernet_header header,rcvd;
-struct pccc_word_read df1_1;
-struct _data retdata;
-struct namedata name;
-struct custom_pccc custom;
-int x,place,d,hlen;
+	struct ethernet_header header,rcvd;
+	struct pccc_word_read df1_1;
+	struct _data retdata;
+	struct namedata name;
+	struct custom_pccc custom;
+	int x,place,d,hlen;
 
 	bzero (&header,sizeof(header));
 	bzero (&rcvd, sizeof(rcvd));
@@ -59,13 +59,13 @@ int x,place,d,hlen;
 		count = 1;
 	count = count * 2;
 	for (x=0;x<(count/2);x++)
-		{
+	{
 		d=outdata.data[x];
 		df1_1.data[place] = (d & 255);
 		place++;
 		df1_1.data[place] = (d / 256);
 		place++;
-		}
+	}
 	df1_1.trans = (count/2);
 	place++;
 	memcpy (&header.df1_stuff, &df1_1, PCCC_WORD_LEN+place);
@@ -75,19 +75,19 @@ int x,place,d,hlen;
 	rcvd = senddf1 (comm1, header, hlen, debug);
 
 	if (rcvd.df1_stuff[4] != (df1_1.cmd + 0x40))
-		{
+	{
 		retdata.len=-1;
 		retdata.data[0]=BADCMDRET;
 		retdata.data[1]=0;
 		return retdata;
-		}
+	}
 	if (rcvd.df1_stuff[5] != 0)
-		{
+	{
 		retdata.len=-1;
 		retdata.data[0]=rcvd.df1_stuff[5];           //Error Response - STS
 		retdata.data[1]=rcvd.df1_stuff[8];           //Error Response - EXT STS
 		return retdata;
-		}
+	}
 return retdata;
 }
 
