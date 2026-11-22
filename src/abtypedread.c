@@ -32,15 +32,16 @@ struct plc5stat status;
 		count = 1;
 	if (argc == 4)
 		count = atoi(argv[3]);
-	if ((argc < 3) || (argc > 4))
+	if ((argc < 3) || (argc > 4) || (count < 1) || (count > 250)) // fix to avoid a count value out of range
 		{
 		printf ("\nThis program will read a register from an Ethernet connected Allen Bradley\n");
 		printf ("PLC-5.  It should also work with a Pyramid Integrator.\n\n");
 		printf ("Correct Usage:\nabtypedread <plc ip addr> <plc register> {<quantity>}\n");
 		printf ("abtypedread 192.168.10.5 n7:0   - will read one integer from N7:0 on 192.168.10.5\n");
 		printf ("abtypedread plc n7:30 4 - will read four integers from N7:30 on plc\n"); 
+		printf ("the quantity needs to be a positive integer from 1 to 250\n");
 		printf ("\n\n");
-		exit (-1);
+		exit (1); // AI suggested that we use 1 instead of -1
 		}
 
 	comm=attach(argv[1],FALSE);
@@ -56,7 +57,7 @@ struct plc5stat status;
 	comm.tns = comm.tns + 4;
 
 	data=typed_read(comm,argv[2],count,type,FALSE);
-	if (data.typelen == 255)
+	if (data.typelen == 255) // we might change this to -1, AI flagged it as fragile
 		{
 		sts = data.data[0];
 		extsts = data.data[1];
@@ -66,7 +67,7 @@ struct plc5stat status;
 		if (extsts != 0)
 			printf ("Extended error code is %s\n",ext_errors[extsts]);
 		close (comm.handle);
-		exit (-1);
+		exit (1); // AI suggested that we use 1 instead of -1
 		}
 	switch (data.name.section)
 		{
@@ -75,15 +76,15 @@ struct plc5stat status;
 				{
 				for (x=0;x<data.len;x=x+2)
 					{
-					temp1 = (data.data[x]);
-					temp2 = (data.data[x+1]);
+					temp1 = (unsigned int)(unsigned short)data.data[x]; //(data.data[x]); // AI suggested fixes, may be reverted later
+					temp2 = (unsigned int)(unsigned short)data.data[x+1]; //(data.data[x+1]);
 					printf ("%f\n",itof(temp1,temp2));
 					}
 				}
 			if (data.name.floatdata == FALSE)
 				{
 				for (x=0;x<(data.len);x++)
-					printf ("%d\n",(short)data.data[x]);
+					printf ("%d\n",(short)data.data[x]); // AI suggests that we do not need the (short) cast, might get removed later
 				}
 			break;
 		case 1:
@@ -95,6 +96,8 @@ struct plc5stat status;
 			for (x=0;x<data.len;x++)
 				printf ("%02X  ",(byte)data.data[x]);
 			printf ("\n");
+		default:
+			printf("Section out of bounds\n");
 		}	 
 	close (comm.handle);
 	exit (0);

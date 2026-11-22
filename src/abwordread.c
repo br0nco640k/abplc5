@@ -32,6 +32,11 @@ struct plc5stat status;
 		count = 1;
 	if (argc == 4)
 		count = atoi(argv[3]);
+	if (count < 1 || count > 250)
+    {
+        printf ("Invalid quantity. Must be 1 to 250.\n");
+        exit (1);
+    }
 	if ((argc < 3) || (argc > 4))
 		{
 		printf ("\nThis program will read a register from an Ethernet connected Allen Bradley\n");
@@ -57,11 +62,11 @@ struct plc5stat status;
 	comm.tns = comm.tns + 4;
 
 	data=word_read(comm,argv[2],count,type,FALSE);
-	if (data.len == 255)
+	if (data.len == -1) // Changed from 255 because AI found it to be incorrect
 		{
 		sts = data.data[0];
 		extsts = data.data[1];
-		printf ("An error occured.  The PLC STS byte is %d, the EXT STS byte is %d\n",sts,extsts);
+		printf ("An error occurred.  The PLC STS byte is %d, the EXT STS byte is %d\n",sts,extsts);
 		if (sts != 0xf0)
 			printf ("Primary Error code is %s\n",errors[(sts/16)]);
 		if (extsts != 0)

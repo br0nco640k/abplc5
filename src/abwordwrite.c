@@ -30,7 +30,11 @@ struct floatstuff fdata;
 	int count,x,sts,extsts,type;
 	byte buf[32];
 	count=0;
-	if ((argc < 3) || (argc > 4))
+	if (argc == 4)
+		count = atoi(argv[3]);
+	if (argc == 3)
+		count = 1;
+	if ((argc < 3) || (argc > 4) || (count < 1) || (count > 250))
 		{
 		printf ("\nThis program will write registers to an Ethernet connected Allen Bradley\n");
 		printf ("PLC-5.  It should also work with a Pyramid Integrator.\n\n");
@@ -38,18 +42,15 @@ struct floatstuff fdata;
 		printf ("Correct Usage:\nabwordwrite <plc ip addr> <plc register> {<quantity>}\n");
 		printf ("abwordwrite 192.168.10.5 n7:0   - will write one integer from N7:0 on plc 192.168.10.5\n");
 		printf ("abwordwrite plc n7:30 4 - will write four integers from N7:30 on plc 192.168.10.5\n"); 
+		printf ("the quantity needs to be a positive integer from 1 to 250\n");
 		printf ("\n\n");
-		exit (-1);
+		exit (1);
 		}
-	if (argc == 4)
-		count = atoi(argv[3]);
-	if (argc == 3)
-		count = 1;
 	comm=attach(argv[1],FALSE);
 	if (comm.error != 0)
 		{
 		printf ("Could not connect.  Check your address and try again.\n");
-		exit (-1);
+		exit (1);
 		}
 	status = getstatus(comm,FALSE);
 	type = PLC5;
@@ -62,7 +63,11 @@ struct floatstuff fdata;
 		for (x=0;x<count;x++)
 			{
 			printf ("Entry #%d of %d:",x+1,count);
-			fgets (buf,10,stdin);
+			if (fgets (buf,10,stdin) == NULL)
+			{
+				fprintf (stderr, "Read failed on stdin\n");
+				exit (1);
+			}
 			printf ("\n");
 			data.data[x]=atoi(buf);
 			}
@@ -74,7 +79,11 @@ struct floatstuff fdata;
 			{
 			printf ("Entry #%d of %d:",(x/2)+1,count/2);
 			bzero (&buf,sizeof(buf));
-			fgets (buf,10,stdin);
+			if (fgets (buf,10,stdin) == NULL)
+			{
+				fprintf (stderr, "Read failed on stdin\n");
+				exit (1);
+			}
 			printf ("\n");
 			fdata = ftoi (atof(buf));
 			data.data[x] = fdata.data1;
@@ -92,7 +101,6 @@ struct floatstuff fdata;
 		if (extsts != 0)
 			printf ("Extended error code is %s\n",ext_errors[extsts]);
 		}
-
 		
 	close (comm.handle);
 	exit (0);
