@@ -3,7 +3,9 @@
 // Ethernet.  This is only to demonstrate the methodology needed.  This program is not
 // necessarily useful for any other purpose.
 
-//  Copyright (1999) by Ron Gage 
+//  Copyright (1999) by Ron Gage
+
+// This file has not yet been checked by AI for errors. It keeps nuking my context window.
 
 #include "libabplc5.h"
 #include <sys/types.h>
@@ -23,8 +25,7 @@ int x,l,junk;
 
 char dataaddr[32];
 
-
-
+// The extern will most likely be removed:
 extern struct _data word_write (struct _comm comm1, char *addr, int count, 
 			struct _data outdata, int plctype, int debug)
 {
@@ -35,6 +36,7 @@ extern struct _data word_write (struct _comm comm1, char *addr, int count,
 	struct custom_pccc custom;
 	int x,place,d,hlen;
 
+	// The bzero's will most likely be replaced with memset statements:
 	bzero (&header,sizeof(header));
 	bzero (&rcvd, sizeof(rcvd));
 	bzero (&retdata,sizeof(retdata));
@@ -51,10 +53,12 @@ extern struct _data word_write (struct _comm comm1, char *addr, int count,
 	df1_1.tns = htons(comm1.tns);
 	df1_1.fnc=0;
 	df1_1.offset = 0;
+	// some checking will be added for the addr argument, to make sure that it isn't NULL or too long:
 	name = nameconv5(addr,plctype,debug);
 	for (x=0;x<name.len;x++)
 		df1_1.data[x] = name.data[x];
 	place = name.len;
+	// Limits will be enforced on count to avoid overflows:
 	if (count == 0)
 		count = 1;
 	count = count * 2;
