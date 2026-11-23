@@ -30,7 +30,7 @@
 
 struct results creatememory (struct _comm comm1, char *addr, int plctype, int debug)
 {
-	struct ethernet_header header,rcvd;
+	struct ethernet_header header, rcvd;
 	struct results result;
 	struct pccc_data df1_1;
 	struct namedata name;

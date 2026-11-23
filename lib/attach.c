@@ -33,7 +33,7 @@ struct _comm attach (char *host, int debug)
 	struct sockaddr_in address;
 	struct ethernet_header header = {0}, rcvd = {0}; // Need to verify that this is a correct way to zero these three
 	struct custom_connect custom = {0};
-	int result,len,response_len,x; // place was listed, but never used
+	int result, len, response_len, x; // place was listed, but never used
 	byte junk[32];
 	hostinfo = gethostbyname(host);
 	if (!hostinfo)
