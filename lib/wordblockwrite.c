@@ -21,12 +21,7 @@
 #include <string.h>
 #include <netdb.h>
 
-int x,l,junk;
-
-char dataaddr[32];
-
-// The extern will most likely be removed:
-extern struct _data word_write (struct _comm comm1, char *addr, int count, 
+struct _data word_write (struct _comm comm1, char *addr, int count, 
 			struct _data outdata, int plctype, int debug)
 {
 	struct ethernet_header header,rcvd;
@@ -36,10 +31,9 @@ extern struct _data word_write (struct _comm comm1, char *addr, int count,
 	struct custom_pccc custom;
 	int x,place,d,hlen;
 
-	// The bzero's will most likely be replaced with memset statements:
-	bzero (&header,sizeof(header));
-	bzero (&rcvd, sizeof(rcvd));
-	bzero (&retdata,sizeof(retdata));
+	memset (&header, 0, sizeof(header));
+	memset (&rcvd, 0, sizeof(rcvd));
+	memset (&retdata, 0, sizeof(retdata));
 	header.mode = 1;
 	header.submode = PCCC_CMD;
 	header.conn = htonl(comm1.commid);
