@@ -19,29 +19,29 @@
 #include <string.h>
 #include <netdb.h>
 
-extern struct results echo (struct _comm comm1, struct _data data, int debug)
+struct results echo (struct _comm comm1, struct _data data, int debug)
 {
-struct ethernet_header header, rcvd;
-struct pccc_data df1_2;
-struct results result;
-struct custom_pccc custom;
-int hlen;
-	bzero (&header,sizeof(header));
-	bzero (&rcvd, sizeof(rcvd));
+	struct ethernet_header header, rcvd;
+	struct pccc_data df1_2;
+	struct results result;
+	struct custom_pccc custom;
+	int hlen;
+	memset (&header, 0, sizeof(header));
+	memset (&rcvd, 0, sizeof(rcvd));
 	header.mode = 1;
 	header.submode = PCCC_CMD;
 	header.conn = htonl(comm1.commid);
 	custom.request_id = htonl(0xe87573);
 	custom.name_id = 0;
 	memcpy (&header.custom, &custom, _CUSTOM_LEN);
-	df1_2.src=0;
+	df1_2.src = 0;
 	df1_2.control = 5;
-	df1_2.dst=0;	
+	df1_2.dst = 0;
 	df1_2.lsap = 0;
-	df1_2.cmd=0x06;
-	df1_2.sts=0;
-	df1_2.tns=htons(comm1.tns);
-	df1_2.fnc=0x00;
+	df1_2.cmd = 0x06;
+	df1_2.sts = 0;
+	df1_2.tns = htons(comm1.tns);
+	df1_2.fnc = 0x00;
 	memcpy (&df1_2.data, &data.data, data.len);
 	hlen = _ENET_HEADER_LEN + PCCC_DATA_LEN + data.len;
 	memcpy (&header.df1_stuff, &df1_2, PCCC_DATA_LEN + data.len);
@@ -55,6 +55,6 @@ int hlen;
 	if (rcvd.df1_stuff[4] != (df1_2.cmd + 0x40))
 		result.sts = 255;
 
-return result;
+	return result;
 }
 
