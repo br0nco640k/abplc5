@@ -5,7 +5,6 @@
 
 //  Copyright (1999) by Ron Gage
 
-// This file has not yet been checked by AI for errors. It keeps nuking my context window.
 
 #include "libabplc5.h"
 #include <sys/types.h>
@@ -38,14 +37,14 @@ struct _data word_write (struct _comm comm1, char *addr, int count,
 	header.submode = PCCC_CMD;
 	header.conn = htonl(comm1.commid);
 	//custom.request_id = 0xe87573; // if we bring this back, AI suggests htonl(0xe87573)
-	df1_1.src=0;
-	df1_1.control=5;
-	df1_1.dst=0;	
-	df1_1.lsap=0;
-	df1_1.cmd=0x0f;
-	df1_1.sts=0;
+	df1_1.src = 0;
+	df1_1.control = 5;
+	df1_1.dst = 0;	
+	df1_1.lsap = 0;
+	df1_1.cmd = 0x0f;
+	df1_1.sts = 0;
 	df1_1.tns = htons(comm1.tns);
-	df1_1.fnc=0;
+	df1_1.fnc = 0;
 	df1_1.offset = 0;
 	// some checking will be added for the addr argument, to make sure that it isn't NULL or too long:
 	if (addr == NULL || *addr == '\0')

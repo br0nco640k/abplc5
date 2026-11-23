@@ -43,14 +43,14 @@ struct _data word_read (struct _comm comm1, char *addr, int count, int plctype, 
 	custom.request_id = htonl(0x7377e8);
 	memcpy (&header.custom, &custom, _CUSTOM_LEN);
 
-	df1_1.src=0;
-	df1_1.control=5;
-	df1_1.dst=0;	
-	df1_1.lsap=0;
-	df1_1.cmd=0x0f;
-	df1_1.sts=0;
-	df1_1.tns=htons(comm1.tns);
-	df1_1.fnc=1;
+	df1_1.src = 0;
+	df1_1.control = 5;
+	df1_1.dst = 0;	
+	df1_1.lsap = 0;
+	df1_1.cmd = 0x0f;
+	df1_1.sts = 0;
+	df1_1.tns = htons(comm1.tns);
+	df1_1.fnc = 1;
 	df1_1.offset = 0;
 
 	if (addr == NULL || *addr == '\0')
