@@ -19,9 +19,9 @@
 #include <string.h>
 #include <netdb.h>
 
-int x,l,junk;
+//int x; //,l,junk;
 
-char dataaddr[32];
+//char dataaddr[32];
 
 /* This routine will initiate a communications link to a PLC5.
 It returns a pointer to a _comm structure.*/
@@ -33,7 +33,7 @@ struct _comm attach (char *host, int debug)
 	struct sockaddr_in address;
 	struct ethernet_header header = {0}, rcvd = {0}; // Need to verify that this is a correct way to zero these three
 	struct custom_connect custom = {0};
-	int result,len,response_len; // place was listed, but never used
+	int result,len,response_len,x; // place was listed, but never used
 	byte junk[32];
 	hostinfo = gethostbyname(host);
 	if (!hostinfo)
