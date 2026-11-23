@@ -28,7 +28,7 @@ struct _data word_write (struct _comm comm1, char *addr, int count,
 	struct pccc_word_read df1_1;
 	struct _data retdata;
 	struct namedata name;
-	struct custom_pccc custom;
+	//struct custom_pccc custom; // custom was commented out because AI found that it wasn't being used anywhere in this file
 	int x,place,d,hlen;
 
 	memset (&header, 0, sizeof(header));
@@ -37,7 +37,7 @@ struct _data word_write (struct _comm comm1, char *addr, int count,
 	header.mode = 1;
 	header.submode = PCCC_CMD;
 	header.conn = htonl(comm1.commid);
-	custom.request_id = 0xe87573;
+	//custom.request_id = 0xe87573; // if we bring this back, AI suggests htonl(0xe87573)
 	df1_1.src=0;
 	df1_1.control=5;
 	df1_1.dst=0;	
@@ -48,7 +48,21 @@ struct _data word_write (struct _comm comm1, char *addr, int count,
 	df1_1.fnc=0;
 	df1_1.offset = 0;
 	// some checking will be added for the addr argument, to make sure that it isn't NULL or too long:
+	if (addr == NULL || *addr == '\0')
+	{
+		retdata.len = -1;
+		retdata.data[0] = (unsigned short)BADCMDRET;
+		retdata.data[1] = 0;
+		return retdata;
+	}
 	name = nameconv5(addr,plctype,debug);
+	if (name.len >= 240)
+	{           /* guard against buffer overflow */
+		retdata.len = -1;
+		retdata.data[0] = (unsigned short)BADCMDRET;
+		retdata.data[1] = 0;
+		return retdata;
+	}
 	for (x=0;x<name.len;x++)
 		df1_1.data[x] = name.data[x];
 	place = name.len;
@@ -74,16 +88,16 @@ struct _data word_write (struct _comm comm1, char *addr, int count,
 
 	if (rcvd.df1_stuff[4] != (df1_1.cmd + 0x40))
 	{
-		retdata.len=-1;
-		retdata.data[0]=BADCMDRET;
-		retdata.data[1]=0;
+		retdata.len = -1;
+		retdata.data[0] = BADCMDRET;
+		retdata.data[1] = 0;
 		return retdata;
 	}
 	if (rcvd.df1_stuff[5] != 0)
 	{
-		retdata.len=-1;
-		retdata.data[0]=rcvd.df1_stuff[5];           //Error Response - STS
-		retdata.data[1]=rcvd.df1_stuff[8];           //Error Response - EXT STS
+		retdata.len = -1;
+		retdata.data[0] = rcvd.df1_stuff[5];           //Error Response - STS
+		retdata.data[1] = rcvd.df1_stuff[8];           //Error Response - EXT STS
 		return retdata;
 	}
 return retdata;

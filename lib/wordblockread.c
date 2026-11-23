@@ -66,6 +66,7 @@ struct _data word_read (struct _comm comm1, char *addr, int count, int plctype, 
 	{           /* guard against buffer overflow */
 		data.len = -1;
 		data.data[0] = (unsigned short)BADCMDRET;
+		data.data[1] = 0;
 		return data;
 	}
 
@@ -102,17 +103,17 @@ struct _data word_read (struct _comm comm1, char *addr, int count, int plctype, 
 
 	if (rcvd.df1_stuff[4] != (df1_1.cmd + 0x40))
 	{
-		data.len=-1;
-		data.data[0]=BADCMDRET;
-		data.data[1]=0;
+		data.len = -1;
+		data.data[0] = BADCMDRET;
+		data.data[1] = 0;
 		return data;
 	}
 
 	if (rcvd.df1_stuff[5] != 0)
 	{
-		data.len=-1;
-		data.data[0]=rcvd.df1_stuff[5];           //Error Response - STS
-		data.data[1]=rcvd.df1_stuff[8];           //Error Response - EXT STS
+		data.len = -1;
+		data.data[0] = rcvd.df1_stuff[5];           //Error Response - STS
+		data.data[1] = rcvd.df1_stuff[8];           //Error Response - EXT STS
 		return data;
 	}
 
