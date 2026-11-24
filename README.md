@@ -10,4 +10,12 @@
   
   The primary function of this code is to read and write data to an Allen Bradley PLC5 over Ethernet. This includes PLC5 compatible PLC's like SoftPLC. It is not intended to support newer versions of Allen Bradley PLC's, although I might consider patches for that from someone that has access to said newer hardware and is willing to maintain those patches for it.
   
-  Ron gave this to the world, for free, and I want to keep that going. Allen Bradley would charge you an arm and a leg and your first born child for it, and split it up into multiple hyper expensive packages while making it confusing to discern which parts you actually need for your project. I want to see people create things with it.
+ Current tasks:
+   
+   1. Find obsolete or platform specific code and refactor it.
+   2. Find any bugs, potential overflows.
+   3. Make sure that it compiles and perform minimal testing.
+
+  Building:
+
+  Coming soon.
